@@ -1,5 +1,5 @@
 wandb_log = True
-wandb_project = 'sophia'
+wandb_project = 'NanoGPT'
 wandb_run_name='gpt2-small-sophiag-100k'
 
 # these make the total batch size be ~0.5M
@@ -16,8 +16,8 @@ dropout = 0.0 # for pretraining 0 is good, for finetuning try 0.1+
 bias = False
 
 # this makes total number of tokens be 300B
-max_iters = 100000
-lr_decay_iters = 100000
+max_iters = 10000
+lr_decay_iters = 10000
 
 # eval stuff
 eval_interval = 1000
@@ -33,7 +33,7 @@ beta2 = 0.99
 grad_clip = 1.0 # clip gradients at this value, or disable if == 0.0
 # learning rate decay settings
 decay_lr = True # whether to decay the learning rate
-warmup_iters = 2000 # how many steps to warm up for
+warmup_iters = 200 # how many steps to warm up for
 min_lr = 1.5e-5 
 rho = 0.05
 interval = 10
