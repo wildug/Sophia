@@ -23,6 +23,7 @@ lr_decay_iters = 10000
 eval_interval = 1000
 eval_iters = 200
 log_interval = 10
+always_save_checkpoint = False  # only save best checkpoint
 
 # optimizer
 optimizer_name = 'sophiag'
