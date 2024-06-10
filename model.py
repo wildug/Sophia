@@ -327,7 +327,7 @@ class GPT(nn.Module):
         elif optimizer_name == 'sophiag':
             optimizer = opt_func(optim_groups, lr=learning_rate, betas=betas, rho=rho)   
         elif optimizer_name == 'lion':
-            optimizer = opt_func(optim_groups, lr=learning_rate, betas=betas, **extra_args)   
+            optimizer = opt_func(optim_groups, lr=learning_rate, betas=betas)   
         else:
             raise ValueError('Invalid optimizer.')
         return optimizer
