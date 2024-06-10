@@ -1,3 +1,7 @@
+# Fork from Sophia Repo for testing different optimizer on NanoGPT (work in progess) 
+
+- trains tiny transformer on 10K with total batch size of 120 (using gradient accumulation)
+
 # Sophia: A Scalable Stochastic Second-order Optimizer for Language Model Pre-training
 
 
