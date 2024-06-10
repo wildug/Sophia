@@ -4,10 +4,10 @@ wandb_run_name='gpt2-small-sophiag-10k'
 
 # these make the total batch size be ~0.5M
 # 8 batch size * 1024 block size * 6 gradaccum * 10 GPUs = 491,520
-batch_size = 8
+batch_size = 6
 block_size = 1024
-gradient_accumulation_steps = 6
-total_bs = 480
+gradient_accumulation_steps = 5
+total_bs = 120 # way to large in practice
 
 n_layer = 6
 n_head = 6
