@@ -226,6 +226,7 @@ if wandb_log and master_process:
 # training loop
 X, Y = get_batch('train') # fetch the very first batch
 t0 = time.time()
+start_time=time.time()
 local_iter_num = 0 # number of iterations in the lifetime of this process
 raw_model = model.module if ddp else model # unwrap DDP container if needed
 running_mfu = -1.0
@@ -333,7 +334,8 @@ while True:
                 "lr": lr,
                 "param_norm": total_param_norm,
                 "momentum_norm" : momentum_norm,
-                "train/clip_rate": clip_time / (iter_num + 1)
+                "train/clip_rate": clip_time / (iter_num + 1),
+                "wallclock time": time.time()-start_time
             }, step=iter_num)
     iter_num += 1
     local_iter_num += 1
