@@ -233,12 +233,9 @@ H = \begin{bmatrix}
 \end{frame}
 
 \begin{frame}
-	\frametitle{Gauss-Newton-Bartlett Estimator }
+	\frametitle{Gauss-Newton-Bartlett Estimator \footnote{https://youtu.be/416NjW3QfwA?feature=shared (great Lecture about Second Order Optimizer from the Numerics of ML lecture by Lukas Tatzel)}}
 	\framesubtitle{making the Hessian diagonal and linearize a deep neural network}
-	 \begin{columns}[c] % The "c" option specifies centered vertical alignment while the "t" option is used for top vertical alignment
-
-		\begin{column}{0.45\textwidth} % Left column width
-Reminder the multivariate Chain Rule:\[
+	Reminder the multivariate Chain Rule:\[
 \frac{\partial L}{\partial x_i}(f(x)) = \sum_{j=1}^m \frac{\partial L}{\partial f_j} \frac{\partial f_j}{\partial x_i}
 \]
 				 \begin{align*}
@@ -246,50 +243,46 @@ Reminder the multivariate Chain Rule:\[
 				 =\left( \sum_j \frac{\partial}{\partial \theta_i } \left(\frac{\partial L}{\partial f_j}\right) \frac{\partial f_j}{\partial \theta_i} +    \frac{\partial L}{\partial f_j} \frac{\partial}{\partial \theta_i }\left( \frac{\partial f_j}{\partial \theta_i}\right) \right) \\
 				 &=\textcolor{magenta}{\left( \sum_j \sum_k \frac{\partial^2 L }{\partial f_j \partial f_k }  \frac{\partial f_j}{\partial \theta_i} \frac{\partial f_k}{\partial \theta_j}\right)}+ \sum_j \left(  \frac{\partial L}{\partial f_j} \underbrace{\frac{\partial}{\partial \theta_i }\left( \frac{\partial f_j}{\partial \theta_i}\right)}_{=0 \text{ for linear}f} \right)  = \textcolor{magenta}{J_\theta^T \underset{\in \mathbb{R}^{c\times c}}{H_f} J_\theta} +  smol
 				 \end{align*}
-		\end{column}
-		\begin{column}{0.55\textwidth} % Right column width
-        	\begin{figure}
-        	    \centering
-                % \includegraphics[width=6.5cm]{figures/longitudinal_relaxation.png}
-        	    % \caption*{Longitdunial Relaxation; time in s}
-                % \includegraphics[width=6.5cm]{figures/transversal_relaxation.png}
-        	    % \caption*{Transverse Relaxation; time in ms}
-        	\end{figure}
-		\end{column}
-	\end{columns}
 \end{frame}
  
+\begin{frame}
+	TODO FINISH GNB sampling and so on
+\end{frame}
 %------------------------------------------------
 
- \begin{frame}
-	\frametitle{}
-	\framesubtitle{}
-	\begin{itemize}
-		\item each type of relaxation corresponds to a contrast method
-		\item tissue-specific time constants  $T_1$ and $T_2$ for relaxation time\\
-			\vspace{1em}
-		$\Longrightarrow$ results in contrast for different tissues
-        	\begin{figure}
-        	    \centering
-                % \includegraphics[width=11.5cm]{figures/T1_T2.png}
-        	    % \caption*{visualization of $T_1$ and $T_2$ contrast}
-        	\end{figure}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Filling the k-space}
-	\vspace{-1.5em}
-\begin{columns}[c] % The "c" option specifies centered vertical alignment while the "t" option is used for top vertical alignment
+\begin{frame}{Sophia}
+	\framesubtitle{\textbf{S}econd-\textbf{o}rder Clip\textbf{p}ed Stoc\textbf{h}astic Opt\textbf{i}miz\textbf{a}tion}
+	 \begin{columns}[c] % The "c" option specifies centered vertical alignment while the "t" option is used for top vertical alignment
 		\begin{column}{0.45\textwidth} % Left column width
-		\begin{itemize}
-			\item voxels are the building blocks of volumes, (often $1\times 1 \times 1 \;$cm)
-			\item MRI scanners \textit{fill the k-space} located in the \textit{spatial frequency domain}
+			\begin{itemize}
+				\item accounts for curvature information during optimization
+				\item clips gradient at 1
+				\item "The authors suspect the GNB estimator has a smaller variance than the Hutchinson’s
+				estimator, [...]."
+				\item only imlpementation using GNB is available
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.55\textwidth} % Right column width
         	\begin{figure}
         	    \centering
-                % \includegraphics[width=5.5cm]{figures/k-space.png}
+                \includegraphics[width=6.5cm]{figures/sophia_algo.png}
+        	    \caption*{Claude Shannon}
+        	\end{figure}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Defining 2x faster }
+\begin{columns}[c] % The "c" option specifies centered vertical alignment while the "t" option is used for top vertical alignment
+		\begin{column}{0.45\textwidth} % Left column width
+			\begin{figure}
+				\includegraphics[width=8cm]{figures/2xfaster.png}
+			\end{figure}
+		\end{column}
+		\begin{column}{0.55\textwidth} % Right column width
+        	\begin{figure}
+        	    \centering
+                \includegraphics[width=7.5cm]{figures/figure4_dahl_et_al.PNG}
         	\end{figure}
 		\end{column}
 	\end{columns}
@@ -297,6 +290,25 @@ Reminder the multivariate Chain Rule:\[
 
 
 %------------------------------------------------
+
+\begin{frame}{Lion: EvoLved Sign Momentum}
+	\framesubtitle{Why not breed your dream optimizer via evolution}
+	\vspace{-1em}
+\begin{columns}[c] % The "c" option specifies centered vertical alignment while the "t" option is used for top vertical alignment
+		\begin{column}{0.45\textwidth} % Left column width
+			\begin{itemize}
+					\item 
+				\item performs better on larger batch sizes
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.55\textwidth} % Right column width
+        	\begin{figure}
+        	    \centering
+                \includegraphics[width=4.4cm]{figures/raw_lion.png}
+        	\end{figure}
+		\end{column}
+	\end{columns}
+\end{frame}
 
 \subsection{Evidence Lower Bound \& Entropy Coding}
 
