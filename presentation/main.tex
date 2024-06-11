@@ -259,7 +259,7 @@ H = \begin{bmatrix}
 				\item clips gradient at 1
 				\item "The authors suspect the GNB estimator has a smaller variance than the Hutchinson’s
 				estimator, [...]."
-				\item only imlpementation using GNB is available
+				\item public implementation only with GNB available
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.55\textwidth} % Right column width
@@ -291,14 +291,18 @@ H = \begin{bmatrix}
 
 %------------------------------------------------
 
-\begin{frame}{Lion: EvoLved Sign Momentum}
-	\framesubtitle{Why not breed your dream optimizer via evolution}
+\begin{frame}{Lion: EvoLved Sign Momentum, an attempt to gödelize optimizers }
+	\framesubtitle{Why not breed your dream optimizer via evolution }
 	\vspace{-1em}
 \begin{columns}[c] % The "c" option specifies centered vertical alignment while the "t" option is used for top vertical alignment
 		\begin{column}{0.45\textwidth} % Left column width
 			\begin{itemize}
-					\item 
-				\item performs better on larger batch sizes
+					\item regularized evolution searches through the symbolic representations					
+					\item inputs are weights, lr and gradient; output can be weights update + extra stuff
+					\item only special types of mutations are allowed
+					\item limited vocabulary and constants are modified/ newly sampled a la $2^a$ for $a\sim \mathcal{N}(0,1)$
+					\item prune search space by checking for functional equivalence and redundant statements 
+					\item tons of compute at google helps
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.55\textwidth} % Right column width
@@ -313,7 +317,8 @@ H = \begin{bmatrix}
 \subsection{Evidence Lower Bound \& Entropy Coding}
 
 
-\begin{frame}{Entropy Coding}
+\begin{frame}{Lion 2}
+	\framesubtitle{Optimizing NNs is already searching over TMs, where will this lead to when we now start searching optimizers?}
 	 \begin{columns}[c] % The "c" option specifies centered vertical alignment while the "t" option is used for top vertical alignment
 		\begin{column}{0.45\textwidth} % Left column width
 			\begin{center}
@@ -337,32 +342,47 @@ H = \begin{bmatrix}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{A Latent Variable Model for $p_{\text{model}}$}
+\begin{frame}{Experiments}
 		\begin{figure}[ht]
         \centering
-		% \includegraphics[width=8cm]{figures/LVM.png}
+		\includegraphics[width=14cm]{figures/NanoGPTFUN.png}
         \caption{Graphical representation of a Latent Variable Model. $\mathbf{Z}$ is called the latent variable and  $X_i$ the target message.}
         \label{fig:LVM}
     \end{figure}
-	\begin{align}
-        p(\mathbf{X}, \mathbf{Z})&= \prod_{i=1}^{n}p(X_i\mid\mathbf{Z})p(\mathbf{Z}) \\
-        p(\mathbf{X}) &=\textcolor{red}{\int_{\mathbf{Z} \in \mathcal{Z}}} p(\mathbf{X}, \mathbf{Z}) \; \textcolor{red}{d\mathbf{Z}}
-	\end{align}
+\end{frame}
+
+\begin{frame}
+		\begin{figure}[ht]
+        \centering
+		\includegraphics[width=14cm]{figures/cluster_advice.png}
+    \end{figure}
 \end{frame}
 
  \begin{frame}
-	\frametitle{A tractable LVM: VAEs minimizing a NELBO}
-	Variational approximation of the true posterior: $\underbrace{q_{\phi}(\mathbf{Z} \mid \mathbf{X})}_{\text{encoder model}}$
-    \begin{align*}
-       h(\mathbf{X}) =& -\log p(\mathbf{X}) \le -\text{ELBO}\\
-        =&~\mathbb{E}_{\mathbf{Z} \sim q_\phi(\mathbf{Z}\mid \mathbf{X})} [- \log  p_\psi(\mathbf{X}  \mid \mathbf{Z})] + D_{KL}(q_\phi(\mathbf{Z}\mid \mathbf{X}) \mid\mid p(\mathbf{Z}))\\
-        =&~ \mathbb{E}_{\mathbf{Z} \sim q_\phi(\mathbf{Z}\mid \mathbf{X})} [- \log  p_\psi(\mathbf{X}  \mid \mathbf{Z}) - \log  p(\mathbf{Z}) + \log q_\phi(\mathbf{Z}\mid \mathbf{X})] 
-    \end{align*}
-	$\Longrightarrow$ the NELBO is an upper bound for the bit rate in lossless data compression
+	\frametitle{Setup}
+	\begin{itemize}
+		\item All Experiments are run on the tcml cluster on a single computer node with 4x GeForce GTX 1080 Ti and Intel XEON CPU E5-2650 v4 (24 cores)
+		\item fork of Sophia repository which itself is a fork of \href{https://github.com/karpathy/nanoGPT/tree/master}{NanoGPT repository} by Andrej Karpathy
+		\item 10K update steps during training on data from \href{https://openwebtext2.readthedocs.io/en/latest/}{OpenWebText 2}
+		\item cross entropy loss 
+		\item \textit{tiny} transformer (30M parameters, 6 Layers, 6 attention heads, 384 embedding dimension, context length of 1024 tokens)
+		\item \textit{gradient accumulation} was used to simulate a higher batch size (120 most of the time)
+	\end{itemize}
 \end{frame}
 
 %------------------------------------------------
 
+ \begin{frame}
+	\frametitle{Hyperparameters}
+	\begin{itemize}
+		\item Sophia paper reports \textit{optimal} hyperparameters for tiny model on 50K (40K more) steps for different optimizers
+		\item manual 
+		\item data was from \href{https://openwebtext2.readthedocs.io/en/latest/}{OpenWebText 2}
+		\item cross entropy loss 
+		\item tiny transformer (30M parameters, 6 Layers, 6 attention heads, 384 embedding dimension, context length of 1024 tokens)
+		\item \textit{gradient accumulation} was used to simulate a higher batch size (120 most of the time)
+	\end{itemize}
+\end{frame}
 
 %------------------------------------------------
 
