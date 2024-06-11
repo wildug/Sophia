@@ -7,10 +7,12 @@ from lion_pytorch import Lion
 import torch
 import torch.nn as nn
 from torch.nn import functional as F
+from torch_optimizer import Adahessian
 
 optimizer_dict = {'adamw': torch.optim.AdamW,
                   'sophiag': SophiaG,
-                  'lion': Lion
+                  'lion': Lion,
+                  'adahessian': Adahessian
                  }
 
 # @torch.jit.script # good to enable when not using torch.compile, disable when using (our default)
@@ -327,6 +329,8 @@ class GPT(nn.Module):
         elif optimizer_name == 'sophiag':
             optimizer = opt_func(optim_groups, lr=learning_rate, betas=betas, rho=rho)   
         elif optimizer_name == 'lion':
+            optimizer = opt_func(optim_groups, lr=learning_rate, betas=betas)   
+        elif optimizer_name == 'adahessian':
             optimizer = opt_func(optim_groups, lr=learning_rate, betas=betas)   
         else:
             raise ValueError('Invalid optimizer.')
