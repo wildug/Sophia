@@ -27,7 +27,7 @@ always_save_checkpoint = False  # only save best checkpoint
 
 # optimizer
 optimizer_name = 'sophiag'
-learning_rate = 1e-3 # max learning rate
+learning_rate = 6e-4 # max learning rate
 weight_decay = 2e-1
 beta1 = 0.965
 beta2 = 0.99
