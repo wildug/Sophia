@@ -19,6 +19,12 @@
 \usepackage{mathtools}
 \usepackage{hyperref}
 
+\hypersetup{%
+  colorlinks=true,% hyperlinks will be coloured
+  linkcolor=blue,% hyperlink text will be green
+  linkbordercolor=blue,% hyperlink border will be red
+}
+
 %----------------------------------------------------------------------------------------
 %	SELECT LAYOUT THEME
 %----------------------------------------------------------------------------------------
@@ -188,11 +194,11 @@
 
 \begin{frame}
 	\frametitle{AdamW: decoupling weight decay from your adaptive optimizer}
-	\framesubtitle{more state of the art research from Freiburg}
+	\framesubtitle{More state of the art research from Freiburg}
 	 \begin{columns}[c] % The "c" option specifies centered vertical alignment while the "t" option is used for top vertical alignment
 		\begin{column}{0.55\textwidth} % Left column width
 			\begin{itemize}
-				\item Given a loss $l(\theta) = \hdots + \lambda \vert \vert \theta \vert \vert^2 $
+				\item Given a loss $L(\theta) = \hdots + \lambda \vert \vert \theta \vert \vert^2 $ ($L_2 regularization$)
 				\item only for vanilla SGD this is equivalent to \textbf{weight decay} \\
 				 $\theta_{t+1} = \theta_t - \eta( \dots + \lambda \theta_t) $\\
 				 \vspace{1em}
@@ -233,10 +239,10 @@ H = \begin{bmatrix}
 \end{frame}
 
 \begin{frame}
-	\frametitle{Gauss-Newton-Bartlett Estimator \footnote{https://youtu.be/416NjW3QfwA?feature=shared (great Lecture about Second Order Optimizer from the Numerics of ML lecture by Lukas Tatzel)}}
+	\frametitle{Gauss-Newton-Bartlett Estimator }
 	\framesubtitle{making the Hessian diagonal and linearize a deep neural network}
-	Reminder the multivariate Chain Rule $L: L(f_1(x), f_2(x), \dots, f_c(x))$:\[
-\frac{\partial L}{\partial x_i}(f(x)) = \sum_{j=1}^c \frac{\partial L}{\partial f_j} \frac{\partial f_j}{\partial x_i}
+	Reminder: the multivariate Chain Rule $L: L(f_1(x), f_2(x), \dots, f_c(x))$:\[
+\frac{\partial L}{\partial x_i}(f(x)) = \sum_{j=1}^c \frac{\partial L}{\partial f_j} \frac{\partial f_j}{\partial x_i} = \nabla_f L  J_x
 \]
 				 \begin{align*}
 					H_{ij} &= \frac{\partial^2 L}{\partial \theta_i \partial \theta_j} =\frac{\partial}{\partial \theta_i }\left( \sum_j \frac{\partial L}{\partial f_j} \frac{\partial f_j}{\partial \theta_i}  \right) 
@@ -246,7 +252,7 @@ H = \begin{bmatrix}
 \end{frame}
  
 \begin{frame}
-	\frametitle{GNB 2}
+	\frametitle{GNB 2\footnote{\href{https://youtu.be/416NjW3QfwA?feature=shared}{Here} is great Lecture about Second Order Optimizer from the Numerics of ML lecture by Lukas Tatzel}}
 	Since $L=H(p_{\text{data}}, p_{\text{model}}) = E_{x\sim p_{data}}[-\log(p_{model}(x))]$ one can rewrite  $H_f = E_{\hat{y} \sim p_{model}}[\frac{\partial^2 L }{\partial^2 f }] =E_{\hat{y} \sim p_{model}}[\frac{\partial L }{\partial f }\frac{\partial L }{\partial f }^T] $ ($H_f$ does no independent on $\hat{y}$)\\
 	$\rightarrow G = E[J_\theta \frac{\partial L }{\partial f }\frac{\partial L }{\partial f }^T J_\theta^T] = E_{\hat{y} \sim p_{model}}[\nabla_\theta L \odot \nabla_\theta L] $
 	\begin{itemize}
@@ -267,7 +273,8 @@ H = \begin{bmatrix}
 				\item clips gradient at 1
 				\item "The authors suspect the GNB estimator has a smaller variance than the Hutchinson’s
 				estimator, [...]."
-				\item public implementation only with GNB available
+				\item public implementation is only with GNB available
+				\item Hessian diagonal is approximated every $k$ steps
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.55\textwidth} % Right column width
@@ -371,6 +378,7 @@ H = \begin{bmatrix}
 		\item fork of Sophia repository which itself is a fork of \href{https://github.com/karpathy/nanoGPT/tree/master}{NanoGPT repository} by Andrej Karpathy
 		\item 10K update steps during training on data from \href{https://openwebtext2.readthedocs.io/en/latest/}{OpenWebText 2}
 		\item cross entropy loss 
+		\item Cosine learning rate schedule with 200 steps warmup
 		\item \textit{tiny} transformer (30M parameters, 6 Layers, 6 attention heads, 384 embedding dimension, context length of 1024 tokens)
 		\item \textit{gradient accumulation} was used to simulate a higher batch size (120 most of the time)
 	\end{itemize}
@@ -379,47 +387,51 @@ H = \begin{bmatrix}
 %------------------------------------------------
 
  \begin{frame}
-	\frametitle{Hyperparameters}
+	\frametitle{Hyperparameters }
 	\begin{itemize}
 		\item Sophia paper reports \textit{optimal} hyperparameters for tiny model on 50K (40K more) steps for different optimizers
 		\item increase maximum learning rate until divergence
-		\item 
-		\item
-		\item
 	\end{itemize}
+	\begin{figure}
+		\includegraphics[width=10cm]{figures/hyperparams_from_sophia.png}
+		\caption*{adapted from Appendix B from Liu et.al 2024}
+	\end{figure}
 \end{frame}
 
 %------------------------------------------------
  \begin{frame}
-	\frametitle{Sophia vs AdamW}
-	\framesubtitle{faster in \#steps or time?}
-	\begin{itemize}
-		\item Sophia paper reports \textit{optimal} hyperparameters for tiny model on 50K (40K more) steps for different optimizers
-		\item increase maximum learning rate until divergence
-		\item 
-		\item
-		\item
-	\end{itemize}
+	\frametitle{Sophia vs AdamW: 2x faster in \#steps or time?}
+	\begin{figure}
+		\includegraphics[width=12cm]{../results/steps_adam_sophia.pdf}
+		\caption{lowest validation losses: AdamW: 3.621 bits, SophiaG: 3.669 bits}
+	\end{figure}
 \end{frame}
 
 
 \begin{frame}[plain] % The optional argument 'plain' hides the headline and footline
-	\begin{center}
-		{\Huge Summary: What is the empirical bit rate for data compression in MRI?}
-		
-		\bigskip\bigskip % Vertical whitespace
-		
-	\end{center}
+
+	\begin{figure}
+		\includegraphics[width=12cm]{../results/time_adam_sophia.pdf}
+		\caption*{Both optimizer performed 10K steps but different wallclock times: AdamW 5h 21m, SophiaG: 6h 48m}
+	\end{figure}
 \end{frame}
 %------------------------------------------------
+\begin{frame}{} % The optional argument 'plain' hides the headline and footline
+
+	\begin{figure}
+		\includegraphics[width=12cm]{../results/time_adam_long_sophia.pdf}
+		\caption*{Both optimizer run for approx. the same time: AdamW 6h 31m, SophiaG: 6h 48m}
+	\end{figure}
+\end{frame}
 
  \begin{frame}
- \frametitle{negative ELBOW}
-    \begin{figure}
-        \begin{center}
-        % \includegraphics[width=7cm]{/mnt/Bachelorarbeit/LOLs/negative_elbow.jpg}
-        \end{center}
-    \end{figure}
+ \frametitle{Caveats}
+ \begin{itemize}
+	\item Since they don't report loss values for tiny (30M) model on 10K steps, this is \textbf{not} a "falsification" of their claims
+ \end{itemize}
+ \begin{figure}
+	% \includegraphics{}
+ \end{figure}
 \end{frame}
 
 %------------------------------------------------
