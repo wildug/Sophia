@@ -428,13 +428,31 @@ H = \begin{bmatrix}
  \frametitle{Caveats}
  \begin{itemize}
 	\item Since they don't report loss values for tiny (30M) model on 10K steps, this is \textbf{not} a "falsification" of their claims
+	\item SophiaG run on 5k steps does also not achieve lower validation loss
+	\item $\dots$
  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Releasing the Lion}
  \begin{figure}
-	% \includegraphics{}
+	\includegraphics[width=12cm]{../results/lion_adam_sophia.pdf}
+	\caption*{Validation Losses: Lion 3.606 bits, AdamW 3.621 bits, SophiaG 3.669 bits}
  \end{figure}
 \end{frame}
 
 %------------------------------------------------
 
+
+\begin{frame}[plain] % The optional argument 'plain' hides the headline and footline
+	\begin{center}
+		{\Huge Thank you for your attention! }
+		
+		\bigskip\bigskip % Vertical whitespace
+		
+		{\LARGE Any questions, comments or Feedback? \includegraphics[width=1cm]{figures/vae.png}}
+		\includegraphics[width=5cm]{qr_to_wandb.png}
+	\end{center}
+\end{frame}
 
 \end{document} 
