@@ -235,8 +235,8 @@ H = \begin{bmatrix}
 \begin{frame}
 	\frametitle{Gauss-Newton-Bartlett Estimator \footnote{https://youtu.be/416NjW3QfwA?feature=shared (great Lecture about Second Order Optimizer from the Numerics of ML lecture by Lukas Tatzel)}}
 	\framesubtitle{making the Hessian diagonal and linearize a deep neural network}
-	Reminder the multivariate Chain Rule:\[
-\frac{\partial L}{\partial x_i}(f(x)) = \sum_{j=1}^m \frac{\partial L}{\partial f_j} \frac{\partial f_j}{\partial x_i}
+	Reminder the multivariate Chain Rule $L: L(f_1(x), f_2(x), \dots, f_c(x))$:\[
+\frac{\partial L}{\partial x_i}(f(x)) = \sum_{j=1}^c \frac{\partial L}{\partial f_j} \frac{\partial f_j}{\partial x_i}
 \]
 				 \begin{align*}
 					H_{ij} &= \frac{\partial^2 L}{\partial \theta_i \partial \theta_j} =\frac{\partial}{\partial \theta_i }\left( \sum_j \frac{\partial L}{\partial f_j} \frac{\partial f_j}{\partial \theta_i}  \right) 
@@ -246,7 +246,15 @@ H = \begin{bmatrix}
 \end{frame}
  
 \begin{frame}
-	TODO FINISH GNB sampling and so on
+	\frametitle{GNB 2}
+	Since $L=H(p_{\text{data}}, p_{\text{model}}) = E_{x\sim p_{data}}[-\log(p_{model}(x))]$ one can rewrite  $H_f = E_{\hat{y} \sim p_{model}}[\frac{\partial^2 L }{\partial^2 f }] =E_{\hat{y} \sim p_{model}}[\frac{\partial L }{\partial f }\frac{\partial L }{\partial f }^T] $ ($H_f$ does no independent on $\hat{y}$)\\
+	$\rightarrow G = E[J_\theta \frac{\partial L }{\partial f }\frac{\partial L }{\partial f }^T J_\theta^T] = E_{\hat{y} \sim p_{model}}[\nabla_\theta L \odot \nabla_\theta L] $
+	\begin{itemize}
+		\item splitting up second derivatives in expectation is called Bartlett's second identity 
+		\item sample $\hat{y} \sim p_{model}$ and calculate gradient w.r.t. $L$
+	\end{itemize}
+
+	
 \end{frame}
 %------------------------------------------------
 
@@ -276,7 +284,7 @@ H = \begin{bmatrix}
 \begin{columns}[c] % The "c" option specifies centered vertical alignment while the "t" option is used for top vertical alignment
 		\begin{column}{0.45\textwidth} % Left column width
 			\begin{figure}
-				\includegraphics[width=8cm]{figures/2xfaster.png}
+				\includegraphics[width=7cm]{figures/2xfaster.png}
 			\end{figure}
 		\end{column}
 		\begin{column}{0.55\textwidth} % Right column width
@@ -299,7 +307,7 @@ H = \begin{bmatrix}
 			\begin{itemize}
 					\item regularized evolution searches through the symbolic representations					
 					\item inputs are weights, lr and gradient; output can be weights update + extra stuff
-					\item only special types of mutations are allowed
+					\item performance is measured on ViT on 10\% of Imagenet (20 mins TPU) and very tiny on LM1B
 					\item limited vocabulary and constants are modified/ newly sampled a la $2^a$ for $a\sim \mathcal{N}(0,1)$
 					\item prune search space by checking for functional equivalence and redundant statements 
 					\item tons of compute at google helps
@@ -321,22 +329,20 @@ H = \begin{bmatrix}
 	\framesubtitle{Optimizing NNs is already searching over TMs, where will this lead to when we now start searching optimizers?}
 	 \begin{columns}[c] % The "c" option specifies centered vertical alignment while the "t" option is used for top vertical alignment
 		\begin{column}{0.45\textwidth} % Left column width
-			\begin{center}
-			Shannon's source coding theorem:\\
-			"The Entropy $H(p)$ is a lower bound for lossless data compression":
-			\end{center}
-			\begin{align*}
-        	H(p) =& - \sum_{\mathbf{X}\in \mathcal{X}} \textcolor{red}{p(\mathbf{X})} \log_2 \textcolor{red}{p(\mathbf{X})}\\
-			\\\vspace{1em}\\
-        H(p_{\text{data}}, p_{\text{model}}) =& - \sum_{\mathbf{X}\in \mathcal{X}} p_{\text{data}}(\mathbf{X}) \log_2 p_{\text{model}}(\mathbf{X}) \\
-        =& ~ H(p_{\text{data}}) + \underbrace{D_{KL}(p_{\text{data}} ||~ p_{\text{model}})}_{\text{modeling gap}}
-			\end{align*}
+				\begin{itemize}
+					\item decoupled weight decay is added manually (gray lines)
+					\item \texttt{interp(a,b,$\lambda$) = $(1-\lambda) a + \lambda b$ } 
+					\item uniform update direction across \textbf{all} dimensions of $\theta$
+					\item authors argue that sign operation adds noise to gradient update and regularizes
+					\item smaller memory footprint than AdamW (only momentum stored)
+					\item almost the same as signSGD (moment variant)
+				\end{itemize}
 		\end{column}
 		\begin{column}{0.55\textwidth} % Right column width
         	\begin{figure}
         	    \centering
-                % \includegraphics[width=4.5cm]{figures/shannon.jpg}
-        	    \caption*{Claude Shannon}
+                \includegraphics[width=6.5cm]{figures/signMomentum.png}
+        	    \caption*{Cleaned up optimizer }
         	\end{figure}
 		\end{column}
 	\end{columns}
@@ -376,15 +382,25 @@ H = \begin{bmatrix}
 	\frametitle{Hyperparameters}
 	\begin{itemize}
 		\item Sophia paper reports \textit{optimal} hyperparameters for tiny model on 50K (40K more) steps for different optimizers
-		\item manual 
-		\item data was from \href{https://openwebtext2.readthedocs.io/en/latest/}{OpenWebText 2}
-		\item cross entropy loss 
-		\item tiny transformer (30M parameters, 6 Layers, 6 attention heads, 384 embedding dimension, context length of 1024 tokens)
-		\item \textit{gradient accumulation} was used to simulate a higher batch size (120 most of the time)
+		\item increase maximum learning rate until divergence
+		\item 
+		\item
+		\item
 	\end{itemize}
 \end{frame}
 
 %------------------------------------------------
+ \begin{frame}
+	\frametitle{Sophia vs AdamW}
+	\framesubtitle{faster in \#steps or time?}
+	\begin{itemize}
+		\item Sophia paper reports \textit{optimal} hyperparameters for tiny model on 50K (40K more) steps for different optimizers
+		\item increase maximum learning rate until divergence
+		\item 
+		\item
+		\item
+	\end{itemize}
+\end{frame}
 
 
 \begin{frame}[plain] % The optional argument 'plain' hides the headline and footline
