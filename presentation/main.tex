@@ -186,11 +186,11 @@
 %	PRESENTATION BODY SLIDES
 %----------------------------------------------------------------------------------------
 
-\section{} % Sections are added in order to organize your presentation into discrete blocks, all sections and subsections are automatically output to the table of contents as an overview of the talk but NOT output in the presentation as separate slides
+\section{New and popular optimizers} % Sections are added in order to organize your presentation into discrete blocks, all sections and subsections are automatically output to the table of contents as an overview of the talk but NOT output in the presentation as separate slides
 
 %------------------------------------------------
 
-\subsection{New but famous optimizers}
+\subsection{AdamW}
 
 \begin{frame}
 	\frametitle{AdamW: decoupling weight decay from your adaptive optimizer}
@@ -217,6 +217,7 @@
 	\end{columns}
 \end{frame}
 
+\subsection{Recap 2nd Order methods}
 \begin{frame}
 	\frametitle{But why should we stick to first order methods?}
 	\framesubtitle{Reminder: Antionio's Lecture and Newton's Method}
@@ -264,6 +265,7 @@ H = \begin{bmatrix}
 \end{frame}
 %------------------------------------------------
 
+\subsection{Sophia}
 \begin{frame}{Sophia}
 	\framesubtitle{\textbf{S}econd-\textbf{o}rder Clip\textbf{p}ed Stoc\textbf{h}astic Opt\textbf{i}miz\textbf{a}tion}
 	 \begin{columns}[c] % The "c" option specifies centered vertical alignment while the "t" option is used for top vertical alignment
@@ -306,6 +308,8 @@ H = \begin{bmatrix}
 
 %------------------------------------------------
 
+\subsection{Lion}
+
 \begin{frame}{Lion: EvoLved Sign Momentum, an attempt to gödelize optimizers }
 	\framesubtitle{Why not breed your dream optimizer via evolution }
 	\vspace{-1em}
@@ -329,7 +333,6 @@ H = \begin{bmatrix}
 	\end{columns}
 \end{frame}
 
-\subsection{Evidence Lower Bound \& Entropy Coding}
 
 
 \begin{frame}{Lion 2}
@@ -354,6 +357,8 @@ H = \begin{bmatrix}
 		\end{column}
 	\end{columns}
 \end{frame}
+
+\subsection{Experiments}
 
 \begin{frame}{Experiments}
 		\begin{figure}[ht]
@@ -444,6 +449,7 @@ H = \begin{bmatrix}
 %------------------------------------------------
 
 
+\section{Conclusion and Discussion}
 \begin{frame}[plain] % The optional argument 'plain' hides the headline and footline
 	\begin{center}
 		{\Huge Thank you for your attention! }
@@ -452,6 +458,12 @@ H = \begin{bmatrix}
 		
 		{\LARGE Any questions, comments or Feedback? \includegraphics[width=1cm]{figures/vae.png}}
 		\includegraphics[width=5cm]{qr_to_wandb.png}
+	\end{center}
+\end{frame}
+
+\begin{frame}[plain] % The optional argument 'plain' hides the headline and footline
+	\begin{center}
+		\includegraphics[width=12cm]{figures/hilbertDOS.png}
 	\end{center}
 \end{frame}
 
