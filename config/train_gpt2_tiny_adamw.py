@@ -31,7 +31,7 @@ learning_rate = 5e-2 # max learning rate
 weight_decay = 3e-1
 beta1 = 0.9
 beta2 = 0.95
-grad_clip = 1.0 # clip gradients at this value, or disable if == 0.0
+grad_clip = 0.0 # clip gradients at this value, or disable if == 0.0
 # learning rate decay settings
 decay_lr = True # whether to decay the learning rate
 warmup_iters = 200 # how many steps to warm up for
