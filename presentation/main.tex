@@ -243,7 +243,7 @@ H = \begin{bmatrix}
 	\frametitle{Gauss-Newton-Bartlett Estimator }
 	\framesubtitle{making the Hessian diagonal and linearize a deep neural network}
 	Reminder: the multivariate Chain Rule $L: L(f_1(x), f_2(x), \dots, f_c(x))$:\[
-\frac{\partial L}{\partial x_i}(f(x)) = \sum_{j=1}^c \frac{\partial L}{\partial f_j} \frac{\partial f_j}{\partial x_i} = \nabla_f L  J_x
+\frac{\partial L}{\partial x_i}(f(x)) = \sum_{j=1}^c \frac{\partial L}{\partial f_j} \frac{\partial f_j}{\partial x_i} = (\nabla_f L  J_x)_i
 \]
 				 \begin{align*}
 					H_{ij} &= \frac{\partial^2 L}{\partial \theta_i \partial \theta_j} =\frac{\partial}{\partial \theta_i }\left( \sum_j \frac{\partial L}{\partial f_j} \frac{\partial f_j}{\partial \theta_i}  \right) 
@@ -450,6 +450,15 @@ H = \begin{bmatrix}
 
 
 \section{Conclusion and Discussion}
+\begin{frame}{Lion SophiaG does not outperform AdamW on adapted NanoGPT} % The optional argument 'plain' hides the headline and footline
+	\begin{center}
+		\begin{itemize}
+			\item SophiaG has approximately the same loss as AdamW
+			\item in my setup the computational overhead cleary outweighs the benefits of additionally gained curvature information
+			\item a simple to add Lion implementation slightly outperforms AdamW \& SophiaG in this specific setup
+		\end{itemize}
+	\end{center}
+\end{frame}
 \begin{frame}[plain] % The optional argument 'plain' hides the headline and footline
 	\begin{center}
 		{\Huge Thank you for your attention! }
